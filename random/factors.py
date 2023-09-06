@@ -10,11 +10,11 @@ for first in range(0, TARGET + 1):
     for second in range(first, TARGET + 1):
         for third in range(second, TARGET + 1):
             prod = first * second * third
-            if prod == 36:
+            if prod == TARGET:
                 arr = [first, second, third]
                 arr.sort()
                 results.add((arr[0], arr[1], arr[2]))
-            if prod > 36:
+            if prod > TARGET:
                 break
 
 print(results)
