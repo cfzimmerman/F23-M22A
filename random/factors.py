@@ -4,7 +4,7 @@ from typing import Set, Tuple
 
 results: Set[Tuple[int, int, int]] = set()
 
-for first in range(0, 36):
+for first in range(0, 37):
     for second in range(first, 37):
         for third in range(second, 37):
             prod = first * second * third
