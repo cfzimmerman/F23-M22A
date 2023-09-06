@@ -2,11 +2,13 @@ from typing import Set, Tuple
 
 # If this isn't sloth, idk what is
 
+TARGET = 36
+
 results: Set[Tuple[int, int, int]] = set()
 
-for first in range(0, 37):
-    for second in range(first, 37):
-        for third in range(second, 37):
+for first in range(0, TARGET + 1):
+    for second in range(first, TARGET + 1):
+        for third in range(second, TARGET + 1):
             prod = first * second * third
             if prod == 36:
                 arr = [first, second, third]
