@@ -3,11 +3,11 @@ use rulinalg::{
     vector::Vector,
 };
 
-const TEMPS: [i32; 23] = [
-    53, 75, 57, 58, 63, 70, 70, 66, 67, 67, 67, 68, 69, 70, 70, 72, 73, 76, 76, 78, 79, 80, 81,
+const TEMPS: [i32; 24] = [
+    53, 75, 57, 58, 63, 70, 70, 66, 67, 67, 67, 68, 69, 70, 70, 72, 73, 75, 76, 76, 78, 79, 80, 81,
 ];
-const FAILURES: [i32; 23] = [
-    3, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+const FAILURES: [i32; 24] = [
+    3, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ];
 
 fn construct_n(num_rows: usize) -> (Matrix<f64>, Vector<f64>) {
@@ -45,8 +45,8 @@ first seven: [
 ]
 
 all: [
-    -0.060333333333333246,
-    4.644999999999994,
+    -0.06083333333333337,
+    4.6750000000000025,
 ]
 
 */
@@ -59,5 +59,5 @@ fn main() {
     let (all_a, all_b) = construct_n(TEMPS.len());
     let least_squares_all = solve_least_squares(all_a, all_b).unwrap();
     println!("\nfirst seven: {:#?}", least_squares_seven.data());
-    println!("\nall seven: {:#?}", least_squares_all.data());
+    println!("\nall: {:#?}", least_squares_all.data());
 }
