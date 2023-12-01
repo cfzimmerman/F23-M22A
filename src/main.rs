@@ -2,28 +2,16 @@ use rulinalg::{
     matrix::{BaseMatrix, Matrix},
     vector::Vector,
 };
+use std::io::stdin;
 
-const TEMPS: [i32; 24] = [
-    53, 75, 57, 58, 63, 70, 70, 66, 67, 67, 67, 68, 69, 70, 70, 72, 73, 75, 76, 76, 78, 79, 80, 81,
-];
-const FAILURES: [i32; 24] = [
-    3, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-];
-
-fn construct_n(num_rows: usize) -> (Matrix<f64>, Vector<f64>) {
-    assert!(num_rows <= TEMPS.len() && num_rows <= FAILURES.len());
-    let mut a_input: Vec<f64> = Vec::with_capacity(num_rows * 2);
-    for num in TEMPS[0..num_rows].iter() {
+fn setup_matrices(x_nums: &[f64], y_nums: &[f64]) -> (Matrix<f64>, Vector<f64>) {
+    let mut a_input: Vec<f64> = Vec::with_capacity(x_nums.len());
+    for num in x_nums.iter() {
         a_input.push((*num).into());
         a_input.push(1.0);
     }
-    let a_mtx = Matrix::new(num_rows, 2, a_input);
-    let b_vec = Vector::new(
-        FAILURES[0..num_rows]
-            .iter()
-            .map(|num| (*num).into())
-            .collect::<Vec<f64>>(),
-    );
+    let a_mtx = Matrix::new(x_nums.len(), 2, a_input);
+    let b_vec = Vector::new(y_nums);
     (a_mtx, b_vec)
 }
 
@@ -37,27 +25,41 @@ fn solve_least_squares(
     atransp_a.solve(atransp_b)
 }
 
-/* OUTPUT
+/// Parses stdin for x,y pairs.
+fn pairs_from_stdin() -> (Vec<f64>, Vec<f64>) {
+    let mut x_inputs: Vec<f64> = Vec::new();
+    let mut y_inputs: Vec<f64> = Vec::new();
+    for line in stdin().lines().into_iter() {
+        let safe_line = match line {
+            Ok(l) => l,
+            Err(_) => continue,
+        };
+        let splt: Vec<f64> = safe_line
+            .split(",")
+            .filter_map(|txt| txt.trim().parse::<f64>().ok())
+            .collect();
+        if splt.len() < 2 {
+            continue;
+        }
+        x_inputs.push(splt[0]);
+        y_inputs.push(splt[1]);
+    }
+    (x_inputs, y_inputs)
+}
 
-first seven: [
-    -0.025393419170243226,
-    3.0464949928469256,
-]
-
-all: [
-    -0.06083333333333337,
-    4.6750000000000025,
-]
-
-*/
-
-/// Currently configured to find the line of best fit for two hard coded vectors.
+/// Finds the line of best fit for a series of x,y pairs.
+/// cat ch_7.txt | cargo run
+/// cat ch_all.txt | cargo run
 fn main() {
-    let (seven_a, seven_b) = construct_n(7);
-    let least_squares_seven = solve_least_squares(seven_a, seven_b).unwrap();
+    let (x_inputs, y_inputs) = pairs_from_stdin();
+    if x_inputs.len() != y_inputs.len() || x_inputs.len() == 0 {
+        eprintln!(
+            "Failed to parse inputs. Stdin looks for x,y pairs \
+        of the form `x,y` like `5,9`."
+        );
+    }
 
-    let (all_a, all_b) = construct_n(TEMPS.len());
-    let least_squares_all = solve_least_squares(all_a, all_b).unwrap();
-    println!("\nfirst seven: {:#?}", least_squares_seven.data());
-    println!("\nall: {:#?}", least_squares_all.data());
+    let (mtx_a, vec_b) = setup_matrices(x_inputs.as_slice(), y_inputs.as_slice());
+    let solved = solve_least_squares(mtx_a, vec_b).unwrap();
+    println!("{:?}", solved.data());
 }
