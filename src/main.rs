@@ -37,6 +37,21 @@ fn solve_least_squares(
     atransp_a.solve(atransp_b)
 }
 
+/* OUTPUT
+
+first seven: [
+    -0.025393419170243226,
+    3.0464949928469256,
+]
+
+all seven: [
+    -0.060333333333333246,
+    4.644999999999994,
+]
+
+*/
+
+/// Currently configured to find the line of best fit for two hard coded vectors.
 fn main() {
     let (seven_a, seven_b) = construct_n(7);
     let least_squares_seven = solve_least_squares(seven_a, seven_b).unwrap();
