@@ -48,8 +48,11 @@ fn pairs_from_stdin() -> (Vec<f64>, Vec<f64>) {
 }
 
 /// Finds the line of best fit for a series of x,y pairs.
+///
+/// Ex:
 /// cat ch_7.txt | cargo run
 /// cat ch_all.txt | cargo run
+/// cat particle.txt | cargo run
 fn main() {
     let (x_inputs, y_inputs) = pairs_from_stdin();
     if x_inputs.len() != y_inputs.len() || x_inputs.len() == 0 {
