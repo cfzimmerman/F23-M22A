@@ -4,6 +4,9 @@ use rulinalg::{
 };
 use std::io::stdin;
 
+/// From x and y returns a matrix A and a vector b such
+/// that Ax = b can be solved if the given data's dimensions
+/// are correct.
 fn setup_matrices(x_nums: &[f64], y_nums: &[f64]) -> (Matrix<f64>, Vector<f64>) {
     let mut a_input: Vec<f64> = Vec::with_capacity(x_nums.len());
     for num in x_nums.iter() {
@@ -15,6 +18,8 @@ fn setup_matrices(x_nums: &[f64], y_nums: &[f64]) -> (Matrix<f64>, Vector<f64>) 
     (a_mtx, b_vec)
 }
 
+/// Solves a least squares problem for x using the method
+/// in the Lay textbook
 fn solve_least_squares(
     a_mtx: Matrix<f64>,
     b_vec: Vector<f64>,
@@ -38,11 +43,10 @@ fn pairs_from_stdin() -> (Vec<f64>, Vec<f64>) {
             .split(",")
             .filter_map(|txt| txt.trim().parse::<f64>().ok())
             .collect();
-        if splt.len() < 2 {
-            continue;
+        if let (Some(x), Some(y)) = (splt.get(0), splt.get(1)) {
+            x_inputs.push(*x);
+            y_inputs.push(*y);
         }
-        x_inputs.push(splt[0]);
-        y_inputs.push(splt[1]);
     }
     (x_inputs, y_inputs)
 }
@@ -50,9 +54,7 @@ fn pairs_from_stdin() -> (Vec<f64>, Vec<f64>) {
 /// Finds the line of best fit for a series of x,y pairs.
 ///
 /// Ex:
-/// cat ch_7.txt | cargo run
 /// cat ch_all.txt | cargo run
-/// cat particle.txt | cargo run
 fn main() {
     let (x_inputs, y_inputs) = pairs_from_stdin();
     if x_inputs.len() != y_inputs.len() || x_inputs.len() == 0 {
@@ -60,6 +62,7 @@ fn main() {
             "Failed to parse inputs. Stdin looks for x,y pairs \
         of the form `x,y` like `5,9`."
         );
+        return;
     }
 
     let (mtx_a, vec_b) = setup_matrices(x_inputs.as_slice(), y_inputs.as_slice());
