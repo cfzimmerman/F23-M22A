@@ -10,7 +10,7 @@ use std::io::stdin;
 fn setup_matrices(x_nums: &[f64], y_nums: &[f64]) -> (Matrix<f64>, Vector<f64>) {
     let mut a_input: Vec<f64> = Vec::with_capacity(x_nums.len());
     for num in x_nums.iter() {
-        a_input.push((*num).into());
+        a_input.push(*num);
         a_input.push(1.0);
     }
     let a_mtx = Matrix::new(x_nums.len(), 2, a_input);
@@ -34,16 +34,16 @@ fn solve_least_squares(
 fn pairs_from_stdin() -> (Vec<f64>, Vec<f64>) {
     let mut x_inputs: Vec<f64> = Vec::new();
     let mut y_inputs: Vec<f64> = Vec::new();
-    for line in stdin().lines().into_iter() {
+    for line in stdin().lines() {
         let safe_line = match line {
             Ok(l) => l,
             Err(_) => continue,
         };
         let splt: Vec<f64> = safe_line
-            .split(",")
+            .split(',')
             .filter_map(|txt| txt.trim().parse::<f64>().ok())
             .collect();
-        if let (Some(x), Some(y)) = (splt.get(0), splt.get(1)) {
+        if let (Some(x), Some(y)) = (splt.first(), splt.get(1)) {
             x_inputs.push(*x);
             y_inputs.push(*y);
         }
@@ -57,7 +57,7 @@ fn pairs_from_stdin() -> (Vec<f64>, Vec<f64>) {
 /// cat ch_all.txt | cargo run
 fn main() {
     let (x_inputs, y_inputs) = pairs_from_stdin();
-    if x_inputs.len() != y_inputs.len() || x_inputs.len() == 0 {
+    if x_inputs.len() != y_inputs.len() || x_inputs.is_empty() {
         eprintln!(
             "Failed to parse inputs. Stdin looks for x,y pairs \
         of the form `x,y` like `5,9`."
